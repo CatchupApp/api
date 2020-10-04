@@ -1,10 +1,9 @@
 import Router from "express-promise-router";
 const router = Router();
 import { validate, Joi } from "express-validation";
-import jwt from "express-jwt";
 import multer from "multer";
 
-import { authenticated } from "./user";
+import { authenticated } from "../utils/auth";
 import ClassController from "../controllers/class";
 
 const upload = multer({
@@ -34,7 +33,12 @@ router.route("/:classId").get(authenticated, ClassController.get);
 
 router
   .route("/:classId/video")
-  .post(authenticated, upload.single("video"), ClassController.upload);
-router.route("/:classId/video/:videoId").delete();
+  .post(authenticated, upload.single("video"), ClassController.video.upload);
+router
+  .route("/:classId/video/:videoId")
+  .get(authenticated, ClassController.video.get);
+router
+  .route("/:classId/video/:videoId")
+  .delete(authenticated, ClassController.video.delete);
 
 export default router;

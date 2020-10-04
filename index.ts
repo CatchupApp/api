@@ -8,7 +8,6 @@ import { ValidationError } from "express-validation";
 import UserRoutes from "./routes/user";
 import AuthRoutes from "./routes/auth";
 import ClassRoutes from "./routes/class";
-import VideoRoutes from "./routes/video";
 import { UserDocument } from "./models/user";
 
 const PORT = process.env.PORT || 8000;
@@ -59,7 +58,6 @@ app.use("/auth", AuthRoutes);
 // Standard routes
 app.use("/user", UserRoutes);
 app.use("/class", ClassRoutes);
-app.use("/video", VideoRoutes);
 // Error handler
 app.use(
   (
