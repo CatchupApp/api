@@ -121,3 +121,9 @@ dist
 
 # macOS
 .DS_Store
+
+# Configuration
+config.json
+
+# Uploaded videos
+upload/
