@@ -2,7 +2,9 @@ import mongoose from "mongoose";
 
 export interface VideoDocument extends mongoose.Document {
   id: string;
+  name: string;
   source: string;
+  date: Date;
   transcript: {
     text: string;
     timestamp: number;
@@ -15,7 +17,8 @@ export interface VideoDocument extends mongoose.Document {
 
 const VideoSchema = new mongoose.Schema({
   name: String,
-  period: String,
+  source: String,
+  date: Date,
   transcript: [
     {
       text: String,

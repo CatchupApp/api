@@ -31,9 +31,19 @@ router.route("/").post(
 
 router.route("/:classId").get(authenticated, ClassController.get);
 
-router
-  .route("/:classId/video")
-  .post(authenticated, upload.single("video"), ClassController.video.upload);
+router.route("/:classId/video").post(
+  authenticated,
+  validate(
+    {
+      body: Joi.object({
+        name: Joi.string().required(),
+      }),
+    },
+    { keyByField: true }
+  ),
+  upload.single("video"),
+  ClassController.video.create
+);
 router
   .route("/:classId/video/:videoId")
   .get(authenticated, ClassController.video.get);

@@ -41,7 +41,7 @@ export default {
     }
   },
   video: {
-    upload: async (req: Request, res: Response, next: NextFunction) => {
+    create: async (req: Request, res: Response, next: NextFunction) => {
       try {
         const theClassId = req.params.classId;
         const theClass = await Class.findById(theClassId);
@@ -56,6 +56,8 @@ export default {
 
           // Save the video to DB
           const newVideo = new Video({
+            name: req.body.name,
+            date: new Date(),
             source: req.file.filename,
           });
           await newVideo.save();
