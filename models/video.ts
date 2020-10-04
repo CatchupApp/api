@@ -5,8 +5,8 @@ export interface VideoDocument extends mongoose.Document {
   name: string;
   source: string;
   date: Date;
-  transcript: {
-    text: string;
+  transcription: {
+    transcript: string;
     confidence: number;
     words: {
       word: string;
@@ -16,9 +16,9 @@ export interface VideoDocument extends mongoose.Document {
     keywords: {
       [entity: string]: {
         salience: number;
-        mentions: string[],
-        meta: {[key: string]: string};
-      }
+        mentions: string[];
+        meta: { [key: string]: string };
+      };
     };
   }[];
 }
@@ -27,18 +27,15 @@ const VideoSchema = new mongoose.Schema({
   name: String,
   source: String,
   date: Date,
-  transcript: [
+  transcription: [
     {
-      text: String,
-      timestamp: Number,
-    },
-  ],
-  analysis: [
-    {
-      text: String,
-      keywords: [
+      transcription: String,
+      confidence: Number,
+      words: [
         {
-          type: String,
+          word: String,
+          start: Number,
+          end: Number,
         },
       ],
     },

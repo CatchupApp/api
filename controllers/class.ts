@@ -95,8 +95,10 @@ export default {
           // TODO: Here's where all the analysis will be sent
           if (video) {
             return res.send({
-              id: video.id,
+              name: video.name,
               source: video.source,
+              id: video.id,
+              transcription: video.transcription,
             });
           }
         }
