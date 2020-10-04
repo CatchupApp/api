@@ -12,6 +12,25 @@ import VideoRoutes from "./routes/video";
 const PORT = process.env.PORT || 8000;
 const DB_URI = process.env.MONGODB_URI || "mongodb://127.0.0.1/catchup";
 
+// Add `user` field to Request to work with express-jwt
+declare global {
+  interface Token {
+    iss: string;
+    sub: string;
+    aud: string | string[];
+    iat: number;
+    exp: number;
+    azp: string;
+    scope: string;
+  }
+
+  namespace Express {
+    interface Request {
+      user?: Token;
+    }
+  }
+}
+
 const app = express();
 mongoose
   .connect(DB_URI, {

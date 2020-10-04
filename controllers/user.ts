@@ -2,11 +2,6 @@ import { Request, Response, NextFunction } from "express";
 
 import User, { UserDocument } from "../models/user";
 
-/**
- *
- * @param user The user to create the JWT for
- */
-
 export default {
   create: async (req: Request, res: Response, next: NextFunction) => {
     try {
@@ -23,9 +18,22 @@ export default {
       await newUser.save();
 
       // Create the JWT and return it
-      return res.send({ token: await newUser.token() });
+      return res.send({ token: await newUser.token(), id: newUser.id });
     } catch (err) {
       return next(err);
+    }
+  },
+  get: async (req: Request, res: Response, next: NextFunction) => {
+    try {
+      const user = await User.findById(req.user?.sub);
+      if (!user) return res.status(401).send();
+      return res.send({
+        fullname: user.fullname,
+        username: user.username,
+        classes: user.classes,
+      });
+    } catch (err) {
+      next(err);
     }
   },
 };
