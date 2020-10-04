@@ -29,9 +29,18 @@ export default {
       const theClassId = req.params.classId;
       const theClass = await Class.findById(theClassId);
       if (req.user && theClass && req.user.classes.includes(theClass.id)) {
+        const videos = await Promise.all(
+          theClass.videos.map(async (videoId) => {
+            const video = await Video.findById(videoId);
+            if (video) {
+              return { id: video.id, date: video.date, name: video.name };
+            }
+          })
+        );
         return res.send({
           name: theClass.name,
           period: theClass.period,
+          videos: videos.filter(Boolean),
         });
       } else {
         return res.status(404).send();
