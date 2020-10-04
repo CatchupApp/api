@@ -5,11 +5,19 @@ export interface VideoDocument extends mongoose.Document {
   source: string;
   transcript: {
     text: string;
-    timestamp: number;
-  }[];
-  analysis: {
-    text: string[];
-    keywords: string[];
+    confidence: number;
+    words: {
+      word: string;
+      start: number;
+      end: number;
+    }[];
+    keywords: {
+      [entity: string]: {
+        salience: number;
+        mentions: string[],
+        meta: {[key: string]: string};
+      }
+    };
   }[];
 }
 
