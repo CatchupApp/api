@@ -6,6 +6,7 @@ import morgan from "morgan";
 import { ValidationError } from "express-validation";
 
 import UserRoutes from "./routes/user";
+import AuthRoutes from "./routes/auth";
 import ClassRoutes from "./routes/class";
 import VideoRoutes from "./routes/video";
 import { UserDocument } from "./models/user";
@@ -52,7 +53,9 @@ app.use(morgan("combined"));
 app.use(bodyParser.json());
 
 // Defautl root route
-app.get("/", (_req, res) => res.send("Welcome to CatchUp!"));
+app.get("/", (_req, res) => res.send("Welcome to Catchup!"));
+// Authentication
+app.use("/auth", AuthRoutes);
 // Standard routes
 app.use("/user", UserRoutes);
 app.use("/class", ClassRoutes);
