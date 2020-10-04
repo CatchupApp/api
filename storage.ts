@@ -1,8 +1,10 @@
 require('dotenv').config() 
 
 import admin from 'firebase-admin'
+import { v4 as uuidv4 } from 'uuid';
 import * as serviceAccount from "./config.json"
 import * as fs from 'fs';
+import * as path from 'path';
 
 const BUCKET_URL = process.env.GCLOUD_STORAGE_BUCKET_URL as string;
 
@@ -39,9 +41,12 @@ export interface MulterFile {
 /**
  * Uploads a given file to gcloud.
  * @param file A MulterFile describing a file to be uploaded.
+ * @param uuid A boolean representing whether to use UUID or not
+ * @returns The filename
  */
-async function uploadFile(file: MulterFile) {
+async function uploadFile(file: MulterFile, uuid = false) {
   return new Promise((resolve, reject) => {
+    let filename = uuid ? `${uuidv4()}.${path.extname(file.originalname)}` : file.originalname; 
     var blob = bucket.file(file.originalname);
     var blobStream = blob.createWriteStream();
 
