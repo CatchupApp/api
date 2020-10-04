@@ -28,10 +28,22 @@ export default {
   get: async (req: Request, res: Response, next: NextFunction) => {
     try {
       if (req.user) {
+        const classes = await Promise.all(
+          req.user.classes.map(async (classId) => {
+            const theClass = await Class.findById(classId);
+            if (theClass) {
+              return {
+                id: theClass.id,
+                name: theClass.name,
+                period: theClass.period,
+              };
+            }
+          })
+        );
         return res.send({
           fullname: req.user.fullname,
           username: req.user.username,
-          classes: req.user.classes,
+          classes: classes.filter(Boolean),
           teacher: req.user.teacher,
         });
       } else {
