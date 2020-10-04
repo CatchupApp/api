@@ -124,3 +124,6 @@ dist
 
 # Configuration
 config.json
+
+# Uploaded videos
+upload/

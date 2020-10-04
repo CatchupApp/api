@@ -7,7 +7,14 @@ import multer from "multer";
 import { authenticated } from "./user";
 import ClassController from "../controllers/class";
 
-const upload = multer({ dest: "videos/" });
+const upload = multer({
+  dest: "upload/",
+  // Require .mp4 videos
+  fileFilter: (req, file, next) => {
+    if (file.mimetype == "video/mp4") next(null, true);
+    else next(new Error("Only .mp4 video files are allowed."));
+  },
+});
 
 router.route("/").post(
   authenticated,
@@ -26,7 +33,7 @@ router.route("/").post(
 router.route("/:classId").get(authenticated, ClassController.get);
 
 router
-  .route("/:classId/video/:videoId")
+  .route("/:classId/video")
   .post(authenticated, upload.single("video"), ClassController.upload);
 router.route("/:classId/video/:videoId").delete();
 

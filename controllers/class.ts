@@ -3,6 +3,7 @@ import { Request, Response, NextFunction } from "express";
 import { uploadFile } from "../utils/storage";
 import User, { UserDocument } from "../models/user";
 import Class, { ClassDocument } from "../models/class";
+import Video, { VideoDocument } from "../models/video";
 
 export default {
   create: async (req: Request, res: Response, next: NextFunction) => {
@@ -28,7 +29,7 @@ export default {
     try {
       const theClassId = req.params.classId;
       const theClass = await Class.findById(theClassId);
-      if (theClass && req.user && req.user.classes.includes(theClass.id)) {
+      if (req.user && theClass && req.user.classes.includes(theClass.id)) {
         return res.send({
           name: theClass.name,
           period: theClass.period,
@@ -45,12 +46,21 @@ export default {
       const theClassId = req.params.classId;
       const theClass = await Class.findById(theClassId);
       if (
-        theClass &&
         req.user &&
         req.user.teacher &&
-        req.user.classes.includes(theClass.id)
+        theClass &&
+        req.user.classes.includes(theClass.id) &&
+        req.file != null
       ) {
-        // TODO: Upload to Google Cloud
+        // TODO: Upload to Google Cloud first, then save
+
+        // Save the video to DB
+        const newVideo = new Video({
+          source: req.file.filename,
+        });
+        await newVideo.save();
+
+        return res.send({ id: newVideo.id });
       } else {
         return res.status(404).send();
       }
