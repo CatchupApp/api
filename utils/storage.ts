@@ -1,10 +1,10 @@
-require('dotenv').config() 
+require("dotenv").config();
 
-import admin from 'firebase-admin'
-import { v4 as uuidv4 } from 'uuid';
-import * as serviceAccount from "./config.json"
-import * as fs from 'fs';
-import * as path from 'path';
+import admin from "firebase-admin";
+import { v4 as uuidv4 } from "uuid";
+import * as serviceAccount from "../config.json";
+import * as fs from "fs";
+import * as path from "path";
 
 const BUCKET_URL = process.env.GCLOUD_STORAGE_BUCKET_URL as string;
 
@@ -19,23 +19,23 @@ const adminParams = {
   authUri: serviceAccount.auth_uri,
   tokenUri: serviceAccount.token_uri,
   authProviderX509CertUrl: serviceAccount.auth_provider_x509_cert_url,
-  clientC509CertUrl: serviceAccount.client_x509_cert_url
-}
+  clientC509CertUrl: serviceAccount.client_x509_cert_url,
+};
 
 admin.initializeApp({
   credential: admin.credential.cert(adminParams),
-  storageBucket: BUCKET_URL
-})
+  storageBucket: BUCKET_URL,
+});
 
 const bucket = admin.storage().bucket();
 
 // Nice little interface representing MulterFiles
 export interface MulterFile {
-  key: string,
-  path: string,
-  mimetype: string,
-  originalname: string,
-  size: number
+  key: string;
+  path: string;
+  mimetype: string;
+  originalname: string;
+  size: number;
 }
 
 /**
@@ -44,17 +44,19 @@ export interface MulterFile {
  * @param uuid A boolean representing whether to use UUID or not
  * @returns The filename
  */
-async function uploadFile(file: MulterFile, uuid = false) {
+export async function uploadFile(file: MulterFile, uuid = false) {
   return new Promise((resolve, reject) => {
-    let filename = uuid ? `${uuidv4()}.${path.extname(file.originalname)}` : file.originalname; 
+    let filename = uuid
+      ? `${uuidv4()}.${path.extname(file.originalname)}`
+      : file.originalname;
     var blob = bucket.file(file.originalname);
     var blobStream = blob.createWriteStream();
 
-    blobStream.on('error', (err) => reject(err));
-    blobStream.on('finish', resolve);
+    blobStream.on("error", (err) => reject(err));
+    blobStream.on("finish", resolve);
 
     fs.createReadStream(file.path).pipe(blobStream);
-  })
+  });
 }
 
 /**
@@ -62,10 +64,13 @@ async function uploadFile(file: MulterFile, uuid = false) {
  * @param sourceFilename String representing the file being downloaded remotely (such as "file.txt").
  * @param destFilename String representing the destination path of the download (such as "./file.txt").
  */
-async function downloadFile(sourceFilename: string, destFilename: string) {
+export async function downloadFile(
+  sourceFilename: string,
+  destFilename: string
+) {
   const options = {
-    destination: destFilename
-  }
+    destination: destFilename,
+  };
 
   await bucket.file(sourceFilename).download(options);
 }
