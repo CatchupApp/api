@@ -31,7 +31,7 @@ const bucket = admin.storage().bucket();
 
 /**
  * Uploads a given file to gcloud.
- * @param file A MulterFile describing a file to be uploaded.
+ * @param file A Express.Multer.File describing a file to be uploaded. Will use the buffer
  * @param uuid A boolean representing whether to use UUID or not
  * @returns The filename
  */
@@ -42,8 +42,7 @@ export async function uploadFile(file: Express.Multer.File) {
 
     blobStream.on("error", (err) => reject(err));
     blobStream.on("finish", resolve);
-
-    fs.createReadStream(file.path).pipe(blobStream);
+    blobStream.end(file.buffer);
   });
 }
 
