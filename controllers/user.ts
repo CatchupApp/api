@@ -1,4 +1,6 @@
 import { Request, Response, NextFunction } from "express";
+import { userInfo } from "os";
+import Class from "../models/class";
 
 import User, { UserDocument } from "../models/user";
 
@@ -25,7 +27,7 @@ export default {
   },
   get: async (req: Request, res: Response, next: NextFunction) => {
     try {
-      if (req.user && req.user.id == req.params.userId) {
+      if (req.user) {
         return res.send({
           fullname: req.user.fullname,
           username: req.user.username,
@@ -38,5 +40,44 @@ export default {
     } catch (err) {
       next(err);
     }
+  },
+  classes: {
+    create: async (req: Request, res: Response, next: NextFunction) => {
+      try {
+        if (req.user) {
+          const classId = req.params.classId;
+          if (
+            Class.exists({ _id: classId }) &&
+            !req.user.classes.includes(classId)
+          ) {
+            req.user.classes.push(classId);
+            await req.user.save();
+
+            return res.send();
+          } else {
+            return res.status(400).send();
+          }
+        } else {
+          return res.status(401).send();
+        }
+      } catch (err) {
+        next(err);
+      }
+    },
+    delete: async (req: Request, res: Response, next: NextFunction) => {
+      try {
+        if (req.user) {
+          const classId = req.params.classId;
+          req.user.classes = req.user.classes.filter((id) => id != classId);
+          await req.user.save();
+
+          return res.send();
+        } else {
+          return res.status(401).send();
+        }
+      } catch (err) {
+        next(err);
+      }
+    },
   },
 };

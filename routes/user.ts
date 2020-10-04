@@ -19,7 +19,9 @@ export const authenticated = async (
       requestProperty: "token",
     })(req, res, async () => {
       const user = await User.findById(req.token?.sub);
-      if (!user) return res.status(401).send();
+      if (!user) return res.status(401).send(); // User not found
+      if (req.params.userId && req.params.userId != user.id)
+        return res.status(401).send(); // User's ID doesn't correspond to route ID
       req.user = user;
       return next();
     }),
@@ -43,7 +45,11 @@ router.route("/").post(
 
 router.route("/:userId").get(authenticated, UserController.get);
 
-router.route("/:userId/class/:classId").post();
-router.route("/:userId/class/:classId").delete();
+router
+  .route("/:userId/class/:classId")
+  .post(authenticated, UserController.classes.create);
+router
+  .route("/:userId/class/:classId")
+  .delete(authenticated, UserController.classes.delete);
 
 export default router;
