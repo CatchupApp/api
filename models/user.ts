@@ -9,9 +9,7 @@ export interface UserDocument extends mongoose.Document {
   password: string;
   checkPassword: (password: string) => boolean; // Check if the given plaintext password is correct
   teacher: boolean;
-  classes: {
-    id: string; // Id of the Class
-  }[];
+  classes: string[];
   token: () => string; // Return a JWT token
 }
 

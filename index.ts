@@ -8,6 +8,7 @@ import { ValidationError } from "express-validation";
 import UserRoutes from "./routes/user";
 import ClassRoutes from "./routes/class";
 import VideoRoutes from "./routes/video";
+import { UserDocument } from "./models/user";
 
 const PORT = process.env.PORT || 8000;
 const DB_URI = process.env.MONGODB_URI || "mongodb://127.0.0.1/catchup";
@@ -26,7 +27,8 @@ declare global {
 
   namespace Express {
     interface Request {
-      user?: Token;
+      token?: Token;
+      user?: UserDocument;
     }
   }
 }
@@ -53,7 +55,7 @@ app.use(bodyParser.json());
 app.get("/", (_req, res) => res.send("Welcome to CatchUp!"));
 // Standard routes
 app.use("/user", UserRoutes);
-app.use("/classes", ClassRoutes);
+app.use("/class", ClassRoutes);
 app.use("/video", VideoRoutes);
 // Error handler
 app.use(

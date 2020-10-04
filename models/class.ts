@@ -4,9 +4,7 @@ export interface ClassDocument extends mongoose.Document {
   id: string;
   name: string;
   period: string | null;
-  videos: {
-    id: string; // Id of the Video
-  }[];
+  videos: string[];
 }
 
 const ClassSchema = new mongoose.Schema({

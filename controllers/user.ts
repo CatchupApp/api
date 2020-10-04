@@ -25,13 +25,16 @@ export default {
   },
   get: async (req: Request, res: Response, next: NextFunction) => {
     try {
-      const user = await User.findById(req.user?.sub);
-      if (!user) return res.status(401).send();
-      return res.send({
-        fullname: user.fullname,
-        username: user.username,
-        classes: user.classes,
-      });
+      if (req.user && req.user.id == req.params.userId) {
+        return res.send({
+          fullname: req.user.fullname,
+          username: req.user.username,
+          classes: req.user.classes,
+          teacher: req.user.teacher,
+        });
+      } else {
+        return res.status(401).send();
+      }
     } catch (err) {
       next(err);
     }
