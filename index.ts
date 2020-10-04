@@ -54,9 +54,12 @@ app.use((_, res, next) => {
   res.header("Access-Control-Allow-Origin", process.env.CLIENT_BASE_URL); // Update to match the domain you will make the request from
   res.header(
     "Access-Control-Allow-Headers",
-    "Origin, X-Requested-With, X-CSRF-Token, Content-Type, Accept"
+    "Authorization, Origin, X-Requested-With, X-CSRF-Token, Content-Type, Accept"
   );
-  res.header("Access-Control-Allow-Methods", "GET, POST, DELETE");
+  res.header(
+    "Access-Control-Allow-Methods",
+    "GET, PUT, POST, DELETE, OPTIONS'"
+  );
   next();
 });
 
